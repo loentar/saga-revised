@@ -106,18 +106,18 @@ namespace Saga.Scripting
         /// <param name="character">Character calling the command</param>
         /// <param name="match">Regex match</param>
         /// <example>!getexp 100 100 100 username</example>
-        [GmAttribute("getexp", 50, "^(\\d{1,3}) (\\d{1,3}) (\\d{1,3}) (.+?)$")]
+        [GmAttribute("getexp", 50, "^(\\d{1,11}) (\\d{1,11}) (\\d{1,11}) (.+?)$")]
         public static void GetExp(Character character, Match match)
         {
-            int cexp = Convert.ToInt16(match.Groups[1].Value);
-			int jexp = Convert.ToInt16(match.Groups[2].Value);
-			int wexp = Convert.ToInt16(match.Groups[3].Value);
+            uint cexp = uint.Parse(match.Groups[1].Value);
+			uint jexp = uint.Parse(match.Groups[2].Value);
+			uint wexp = uint.Parse(match.Groups[3].Value);
 			if(cexp < 0 || jexp < 0 || wexp < 0) {
 				CommonFunctions.Broadcast(character, character, "command failed");
 			} else {
 				Character characterTarget;
 				if (Tasks.LifeCycle.TryGetByName(match.Groups[4].Value, out characterTarget)) {
-					Common.Experience.Add(characterTarget, (uint)cexp, (uint)jexp, (uint)wexp);
+					Common.Experience.Add(characterTarget, cexp, jexp, wexp);
 				} else {
 					CommonFunctions.Broadcast(character, character, "character was not found");
 				}
@@ -130,17 +130,17 @@ namespace Saga.Scripting
         /// <param name="character">Character calling the command</param>
         /// <param name="match">Regex match</param>
         /// <example>!zeny 10000 username</example>
-        [GmAttribute("zeny", 50, "^(\\d{1,3}) (.+?)$")]
+        [GmAttribute("zeny", 50, "^(\\d{1,11}) (.+?)$")]
         public static void GetZeny(Character character, Match match)
         {
-			int gzeny = Convert.ToInt16(match.Groups[1].Value);
+			uint gzeny = uint.Parse(match.Groups[1].Value);
 			if(gzeny < 1) {
 				CommonFunctions.Broadcast(character, character, "command failed");
 			} else {
 				Character characterTarget;
 				if (Tasks.LifeCycle.TryGetByName(match.Groups[2].Value, out characterTarget))
 				{
-					characterTarget.ZENY += (uint)gzeny;
+					characterTarget.ZENY += gzeny;
 					CommonFunctions.UpdateZeny(characterTarget);
 				} else {
 					CommonFunctions.Broadcast(character, character, "character was not found");

@@ -172,6 +172,7 @@ namespace Saga.PrimaryTypes
 
         public byte CannotAttack;                        // 603
         public byte CannotMove;                          // 604
+		public byte Sleep;                               // 605
 
         public int LPAtkAdd = 0;
         public byte noDamage = 0;

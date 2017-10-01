@@ -240,23 +240,6 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 
-<<<<<<< HEAD
-# Custom ignored file type
-*.bak
-Binary/lua51.dll
-Binary/LuaInterface.dll
-Binary/luanet.dll
-Binary/MySql.Data.dll
-Binary/Saga.Authentication.Data.Mysql.dll
-Binary/Saga.Authentication.exe
-Binary/Saga.Gateway.exe
-Binary/Saga.Map.Data.LuaQuest.dll
-Binary/Saga.Map.Data.Mysql.dll
-Binary/Saga.Map.exe
-Binary/Saga.Map.Plugins.dll
-Binary/Saga.Shared.Definitions.dll
-Binary/Saga.Shared.NetworkCore.dll
-=======
 # GhostDoc plugin setting file
 *.GhostDoc.xml
 
@@ -323,4 +306,3 @@ OpenCover/
 
 # Saga Revised files
 [Bb]inary/
->>>>>>> d57ea04ff597e1a4a5d75b8b526b20d923aa0bc4

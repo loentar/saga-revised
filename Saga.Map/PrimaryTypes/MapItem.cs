@@ -44,10 +44,8 @@ namespace Saga.PrimaryTypes
 
         protected void OnCheckQuest(Character target)
         {
-            foreach (QuestBase c in target.QuestObjectives)
-            {
-                c.CheckQuest(target);
-            }
+            foreach (QuestBase baseQ in target.QuestObjectives)
+                baseQ.CheckQuest(target);
         }
 
         protected void OnCheckMail(Character target)

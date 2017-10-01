@@ -8,7 +8,7 @@ namespace Saga.Skills
         public static void THIEF_FATALBLOW(SkillBaseEventArgs bargument)
         {
             int Lvldiff;
-            int cLP;
+			int cLP;
             SkillUsageEventArgs.SkillMatrix matrix;
             Actor asource = bargument.Sender as Actor;
             Actor atarget = bargument.Target as Actor;
@@ -19,9 +19,9 @@ namespace Saga.Skills
                 Singleton.Additions.ApplyAddition(arguments.Addition, asource);
                 matrix = arguments.GetDefaultSkillMatrix(asource, atarget);
                 Lvldiff = arguments.GetCappedLevelDifference(matrix);
-                cLP = asource.Status.CurrentLp;
-                matrix[1, 3] = (int)((double)matrix[1, 3] * (1.45 + 0.05 * arguments.SkillLevel) + (cLP * 300));
-                matrix[0, 3] *= (int)(matrix[0, 3] * 1.2);
+				cLP = asource.Status.CurrentLp;
+			    matrix[1, 3] = (int)((double)matrix[1, 3] * (1.45 + 0.05 * arguments.SkillLevel) + ((cLP * (30* arguments.SkillLevel))*2));
+				matrix[0, 3] *= (int)(matrix[0, 3] * 1.2);
                 matrix[4, 3] += (Lvldiff * 120);
                 Singleton.Additions.DeapplyAddition(arguments.Addition, asource);
 

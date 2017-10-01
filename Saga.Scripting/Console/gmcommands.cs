@@ -11,18 +11,150 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.ComponentModel;
+using System.Data;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Saga.Scripting
 {
     public static partial class Console
     {
         /// <summary>
+        /// Get the avalaible commands for users
+        /// </summary>
+        /// <param name="character">Character calling the command</param>
+        /// <param name="match">Regex match</param>
+        /// <example>!commands</example>
+        [GmAttribute("commands", 0, "(.*?)")]
+        public static void Commands(Character character, Match match)
+        {
+			CommonFunctions.Broadcast(character, character, "/move = Warp to a city");
+			CommonFunctions.Broadcast(character, character, "/tr = Use when jump to refresh");
+			CommonFunctions.Broadcast(character, character, "/who = See how many users are playing");
+			CommonFunctions.Broadcast(character, character, "/pos = Get your position coords");
+			CommonFunctions.Broadcast(character, character, "/ping = Show the current ping");
+		}
+
+        /// <summary>
+        /// Get user to server ping
+        /// </summary>
+        /// <param name="character">Character calling the command</param>
+        /// <param name="match">Regex match</param>
+        /// <example>!ping</example>
+        [GmAttribute("ping", 0, "(.*?)")]
+        public static void GetPing(Character character, Match match)
+        {
+			using (Ping p = new Ping()) {
+				CommonFunctions.Broadcast(character, character, p.Send("23.88.103.73").RoundtripTime.ToString() + "ms");
+			}
+		}
+
+        /// <summary>
+        /// Warps yourself to the specified defined map
+        /// </summary>
+        /// <param name="character">Character calling the command</param>
+        /// <param name="match">Regex match</param>
+        /// <example>!move 1</example>
+        [GmAttribute("move", 0, "^(\\d{1,3})$")]
+        public static void MoveMap(Character character, Match match)
+        {
+            Point coord;
+            switch (Convert.ToInt16(match.Groups[1].Value))
+            {
+				case 1: //Hodemimes:1
+					coord.x = 3241f;
+					coord.y = -13725;
+					coord.z = -6415;
+					byte map1 = Convert.ToByte(1);
+					CommonFunctions.Warp(character, map1, coord);
+					break;
+				case 2: //Prontera:5
+					coord.x = 11643f;
+					coord.y = 77005;
+					coord.z = 5094;
+					byte map2 = Convert.ToByte(5);
+					CommonFunctions.Warp(character, map2, coord);
+					break;
+				case 3: //Cognito:12
+					coord.x = -8423f;
+					coord.y = -20354;
+					coord.z = 6173;
+					byte map3 = Convert.ToByte(12);
+					CommonFunctions.Warp(character, map3, coord);
+					break;
+				case 4: //Alfheim:20
+					coord.x = -24258f;
+					coord.y = -23086;
+					coord.z = 11107;
+					byte map4 = Convert.ToByte(20);
+					CommonFunctions.Warp(character, map4, coord);
+					break;
+                default:
+					CommonFunctions.Broadcast(character, character, "List of Maps:");
+					CommonFunctions.Broadcast(character, character, "/move 1 - Hodemimes");
+					CommonFunctions.Broadcast(character, character, "/move 2 - Prontera");
+					CommonFunctions.Broadcast(character, character, "/move 3 - Cognito Town");
+					CommonFunctions.Broadcast(character, character, "/move 4 - Alfheim");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Get experience to user
+        /// </summary>
+        /// <param name="character">Character calling the command</param>
+        /// <param name="match">Regex match</param>
+        /// <example>!getexp 100 100 100 username</example>
+        [GmAttribute("getexp", 50, "^(\\d{1,3}) (\\d{1,3}) (\\d{1,3}) (.+?)$")]
+        public static void GetExp(Character character, Match match)
+        {
+            int cexp = Convert.ToInt16(match.Groups[1].Value);
+			int jexp = Convert.ToInt16(match.Groups[2].Value);
+			int wexp = Convert.ToInt16(match.Groups[3].Value);
+			if(cexp < 0 || jexp < 0 || wexp < 0) {
+				CommonFunctions.Broadcast(character, character, "command failed");
+			} else {
+				Character characterTarget;
+				if (Tasks.LifeCycle.TryGetByName(match.Groups[4].Value, out characterTarget)) {
+					Common.Experience.Add(characterTarget, (uint)cexp, (uint)jexp, (uint)wexp);
+				} else {
+					CommonFunctions.Broadcast(character, character, "character was not found");
+				}
+			}
+        }
+
+        /// <summary>
+        /// Give zeny to user
+        /// </summary>
+        /// <param name="character">Character calling the command</param>
+        /// <param name="match">Regex match</param>
+        /// <example>!zeny 10000 username</example>
+        [GmAttribute("zeny", 50, "^(\\d{1,3}) (.+?)$")]
+        public static void GetZeny(Character character, Match match)
+        {
+			int gzeny = Convert.ToInt16(match.Groups[1].Value);
+			if(gzeny < 1) {
+				CommonFunctions.Broadcast(character, character, "command failed");
+			} else {
+				Character characterTarget;
+				if (Tasks.LifeCycle.TryGetByName(match.Groups[2].Value, out characterTarget))
+				{
+					characterTarget.ZENY += (uint)gzeny;
+					CommonFunctions.UpdateZeny(characterTarget);
+				} else {
+					CommonFunctions.Broadcast(character, character, "character was not found");
+				}
+			}
+		}		
+
+        /// <summary>
         /// Warps yourself to a specified map
         /// </summary>
         /// <param name="character">Character calling the command</param>
         /// <param name="match">Regex match</param>
         /// <example>!pos</example>
-        [GmAttribute("pos", 1, "(.*?)")]
+        [GmAttribute("pos", 0, "(.*?)")]
         public static void Position(Character character, Match match)
         {
             //Return the character's position
@@ -39,7 +171,7 @@ namespace Saga.Scripting
         public static void Worldload(Character character, Match match)
         {
             //Return the character's position
-            string message = string.Format(CultureInfo.InvariantCulture, "{0} Personnes connectées ", Tasks.LifeCycle.Count);
+            string message = string.Format(CultureInfo.InvariantCulture, "{0} players connected", Tasks.LifeCycle.Count);
             CommonFunctions.Broadcast(character, character, message);
         }
 
@@ -178,7 +310,7 @@ namespace Saga.Scripting
         /// <param name="character">Character calling the command</param>
         /// <param name="match">Regex match</param>
         /// <example>!showmaintenance</example>
-        [GmAttribute("showmaintenance", 10, "(.*?)")]
+        [GmAttribute("nextmain", 0, "(.*?)")]
         public static void ShowMaintenance(Character character, Match match)
         {
             string message = Tasks.Maintenance.IsScheduled ? string.Format("Maintaince is scheduled on: {0}", Tasks.Maintenance.NextSceduledMaintenance.ToShortTimeString()) : "Maintaince is not scheduled";

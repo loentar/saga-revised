@@ -14,7 +14,7 @@ namespace Saga.Skills
                 arguments.Failed = false;
                 Common.Skills.UpdateAddition(arguments.Target as Actor, arguments.Addition, 600000);
                 //Do lp effect
-                Common.Skills.DoAddition(bargument.Sender as Actor, bargument.Target as Actor, 1003301);
+                Common.Skills.DoAddition(bargument.Sender as Actor, bargument.Sender as Actor, 1003301);
             }
         }
     }

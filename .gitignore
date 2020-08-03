@@ -306,3 +306,16 @@ OpenCover/
 
 # Saga Revised files
 [Bb]inary/
+lua51.dll
+LuaInterface.dll
+MySql.Data.dll
+luanet.dll
+Saga.Authentication.Data.Mysql.dll
+Saga.Authentication.exe
+Saga.Gateway.exe
+Saga.Map.Data.LuaQuest.dll
+Saga.Map.Data.Mysql.dll
+Saga.Map.exe
+Saga.Map.Plugins.dll
+Saga.Shared.Definitions.dll
+Saga.Shared.NetworkCore.dll

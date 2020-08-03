@@ -319,3 +319,4 @@ Saga.Map.exe
 Saga.Map.Plugins.dll
 Saga.Shared.Definitions.dll
 Saga.Shared.NetworkCore.dll
+Saga.Authentication.log.csv

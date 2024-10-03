@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eu
+
+if [ ! -f db.config ]
+do
+  echo "copy provided 'db.config.example' to 'db.config' and configure mysql server connection"
+  exit 1
+done
+
+. db.config
+
+mysql -u $user -p$password <<< "drop database $db;"
+mysql -u $user -p$password <<< "create database $db; SET GLOBAL sql_mode = '';"
+
+for sql in *.sql; do
+  echo "importing $sql..."
+  mysql $db -u $user -p$password < $sql
+done
+
+
+mysql $db -u $user -p$password <<< 'INSERT INTO `list_worlds` (`Id`, `Name`, `Proof`) VALUES (1, '"'"'SAGA'"'"', '"'"'E10ADC3949BA59ABBE56E057F20F883E'"'"');'
+

@@ -480,6 +480,19 @@ namespace Saga
         }
 
         /// <summary>
+        /// Checks the success random.
+        /// </summary>
+        /// <returns>True if random is success</returns>
+		public bool SkillRand(int c)
+		{
+			int p = Saga.Utils.Generator.Random(1,100);
+			if( p < c )
+				return true;
+			else
+				return false;
+		}
+
+        /// <summary>
         /// Checks if the skill missed.
         /// </summary>
         /// <param name="matrix">Skill matrix used to peform the calculation</param>

@@ -97,8 +97,8 @@ namespace Saga.Map.Client
                         Trace.WriteLine("Creating restore point could not save into database");
                         Singleton.Database.CreateRestorePoint(this.character);
                     }
-
-                    GC.ReRegisterForFinalize(this.character);               //Allow garbage collector to clean up
+                    if (this.character != null)
+                        GC.ReRegisterForFinalize(this.character);               //Allow garbage collector to clean up
                 }
 
                 //Set character instance to null

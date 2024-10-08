@@ -349,7 +349,6 @@ namespace Common
         /// </summary>
         /// <param name="target">Target on which the addition is casted</param>
         /// <param name="Addition">Addition which is casted</param>
-        /// <param name="Duration">How long the addition lasts (ms)</param>
         public static void UpdateAddition(Actor target, uint addition)
         {
             Saga.Factory.Additions.Info info;

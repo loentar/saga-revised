@@ -40,28 +40,78 @@ sudo mv /usr/lib/mono/3.5 /usr/lib/mono/3.5~
 sudo ln -s 4.5 /usr/lib/mono/3.5
 ```
 
-Then, run `build.sh` to build Saga Revised.
-
 Now, download and compile lua for Mono like this:
 
 ```bash
-sudo apt install lua5.1 liblua5.1-dev mono-devel
+sudo apt install lua5.1 liblua5.1-dev mono-devel build-essential
 mkdir -p ~/devel
 cd ~/devel
 git clone https://github.com/stevedonovan/MonoLuaInterface.git
 cd MonoLuaInterface/src
 ./configure
 make
-sudo ./install /usr/local/bin
+cd ../..
+
+# place libraries to saga-revised
+rm -f saga-revised/Dependecies/[Ll]ua*
+cp -f MonoLuaInterface/bin/*.dll MonoLuaInterface/bin/*.so saga-revised/Dependecies/
 ```
 
-Copy all the files from `~/devel/MonoLuaInterface/bin` to the server Binary directory replacing existing files.
+Then, run `build.sh` to build Saga Revised.
 
 > Saga.Tools.Tasks currently doesn't build under Mono.
 
+### Deploy
+
+Deploy like this:
+
+```bash
+deploy=~/saga-server
+mkdir -p $deploy
+cp -R Binary Data Quests Dependecies Saga.Scripting $deploy/
+```
+
 ### Setting up the SQL database
 
-#### Installation
+#### MySQL Installation for Linux
+
+Follow guide https://docs.vultr.com/how-to-install-mysql-5-7-on-ubuntu-20-04
+
+TL;DR:
+
+```bash
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+# select bionic, 5.7 version
+sudo apt update
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys KEY_FROM_THE_ERROR
+sudo apt update
+sudo apt-cache policy mysql-server
+sudo apt install -f mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7*
+```
+
+Populate DB:
+```bash
+cd Database
+cp db.conf.example db.conf
+chmod 600 db.conf
+mcedit db.conf
+# edit db, user and password
+bash import_all
+```
+
+Create user for the server:
+
+```sql
+CREATE USER 'saga'@'localhost';
+GRANT ALL PRIVILEGES ON saga.* To 'saga'@'localhost' IDENTIFIED BY '<PASSWORD>';
+
+```
+
+Replace "<PASSWORD>" with your user password.
+
+
+#### MySQL Installation for Windows
 
 Download [MySQL Installer](http://dev.mysql.com/downloads/windows/installer/) and install at least MySQL Server and MySQL Workbench. Then start MySQL Workbench and check in `startup / shutdown` if the MySQL Server is running.
 
@@ -155,9 +205,11 @@ If the computer is extremely stressed loading the lua quest files ad-hoc can cau
 Lua reads the files ASCII encoding so if you save it with unicode encoding this causes issues also.
 A fix could be to preload all quest files and add a reload command.
 
-Mysql <5.1 is not supported. It will never be supported either. However both Mysql 6.x and 5.1 are supported.
+Mysql <5.1 or >8.0 is not supported. However both Mysql 6.x and 5.1 are supported, recommended version is MySql 5.7.
 
-The server has never been tested under a stressful environment and Mono. Be aware to expect bugs in that corner or even uncompatibility.
+The server has never been tested under a stressful environment. Be aware to expect bugs in that corner or even uncompatibility.
+
+The server works under Mono.
 
 ## About
 

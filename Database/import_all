@@ -3,17 +3,18 @@
 set -eu
 
 if [ ! -f db.config ]
-do
+then
   echo "copy provided 'db.config.example' to 'db.config' and configure mysql server connection"
   exit 1
-done
+fi
 
 . db.config
 
-mysql -u $user -p$password <<< "drop database $db;"
+mysql -u $user -p$password <<< "drop database $db;" || true
 mysql -u $user -p$password <<< "create database $db; SET GLOBAL sql_mode = '';"
 
-for sql in *.sql; do
+for sql in Mysql/*.sql
+do
   echo "importing $sql..."
   mysql $db -u $user -p$password < $sql
 done

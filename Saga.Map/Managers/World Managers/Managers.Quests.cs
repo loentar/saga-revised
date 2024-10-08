@@ -131,6 +131,12 @@ namespace Saga.Managers
                 quest = null;
                 return false;
             }
+            catch (Exception)
+            {
+                Trace.TraceWarning("Scenario Quest could not be found: {0} : Unknown error", questId);
+                quest = null;
+                return false;
+            }
         }
 
         public void OpenQuest(Character target, MapObject item)

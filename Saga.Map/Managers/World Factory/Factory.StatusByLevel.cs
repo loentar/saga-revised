@@ -155,6 +155,9 @@ namespace Saga.Factory
                 if (cexp < this.levelTable[i].cexp) break;
                 a++;
             }
+			if( a > 1) {
+				a = 1;
+			}
             return (byte)a;
         }
 
@@ -166,6 +169,9 @@ namespace Saga.Factory
                 if (jexp < this.levelTable[i].jexp) break;
                 a++;
             }
+			if( a > 3) {
+				a = 3;
+			}
             return (byte)a;
         }
 

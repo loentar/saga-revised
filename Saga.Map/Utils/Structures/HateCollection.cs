@@ -83,7 +83,8 @@ namespace Saga.Structures
                 uint previousdamage = 0;
                 DamageTable.TryGetValue(objects.id, out previousdamage);
                 previousdamage = previousdamage + damage > uint.MaxValue ? (uint)uint.MaxValue : (uint)(previousdamage + damage);
-
+				if (previousdamage > 30000 || previousdamage < 0)
+					DamageTable.Remove(objects.id);
                 lock (DamageTable)
                 {
                     if (previousdamage == 0)

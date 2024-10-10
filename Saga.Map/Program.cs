@@ -533,6 +533,12 @@ namespace Saga.Map
                 //CONFIGURE CONSOLE SETTING
                 ConsoleSettings consoleSettings = new ConsoleSettings();
                 consoleSettings.CommandPrefix = "@";
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.Commands"));
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.MoveMap"));
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.GetExp"));
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.GetZeny"));
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.GetPing"));
+				consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.Broadcast"));
                 consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.Broadcast"));
                 consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.Position"));
                 consoleSettings.GmCommands.Add(new FactoryFileElement("Saga.Scripting.Console.ChatMute"));

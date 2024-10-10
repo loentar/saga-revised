@@ -529,22 +529,21 @@ namespace Saga.PrimaryTypes
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// The natural sp recovery is invoked every 4 secconds
+        /// The natural sp recovery is invoked every 0.7 seccond
         ///
         /// The natural sp & hp recovery are affected by additional stats/bonusses. Therefor
-        /// we'll process HPRECOVERY only when the latest tick is greater than  1000 minus
-        /// HP_RECOVERYRATE. The same storrie applies to SPRECOVERY, we'll only process that
-        /// if the lastest tick is greater than 4000 minus SPRECOVERYRATE.
+        /// we'll process sPRECOVERY only when the latest tick is greater than  1000 minus
+        /// sP_RECOVERYRATE. The same storrie applies to SPRECOVERY, we'll only process that
+        /// if the lastest tick is greater than 700 minus SPRECOVERYRATE * 5.
         ///
-        /// Note: delta tick means the ellapsed time difference specified in millisecconds
-        /// between tick start and tick end. So 4000 makes 4 secconds and 1000 makes 1 seccond.
         /// </remarks>
         public bool OnRegenerateSP()
         {
-            if (this.SP < this.SPMAX && Environment.TickCount - LASTSP_TICK > (4000 - this._status.SpRecoveryRate))
+			ushort REGENSP_RATE = (ushort)(700 - (this._status.SpRecoveryRate * 10));
+            if (this.SP < this.SPMAX && Environment.TickCount - LASTSP_TICK > (ushort)(REGENSP_RATE))
             {
                 LASTSP_TICK = Environment.TickCount;
-                ushort REGENSP_BONUS = (ushort)(((double)this.SPMAX * 0.35) + _status.SpRecoveryQuantity);
+                ushort REGENSP_BONUS = (ushort)(7 + _status.SpRecoveryQuantity);
                 ushort newSP = (ushort)(this.SP + REGENSP_BONUS);
                 this.SP = (newSP < this.SPMAX) ? newSP : this.SPMAX;
                 this._status.Updates |= 1;
@@ -572,9 +571,9 @@ namespace Saga.PrimaryTypes
             int delta_t = Environment.TickCount - LASTBREATH_TICK;
             LASTBREATH_TICK = Environment.TickCount;
 
-            if (IsDiving == true)
+            if (this.IsDiving == true)
             {
-                if (delta_t > 1000)
+                if (Environment.TickCount - LASTBREATH_TICK > 1000)
                 {
                     if (_status.CurrentOxygen > 0)
                     {
@@ -585,7 +584,10 @@ namespace Saga.PrimaryTypes
                     {
                         ushort damage = (ushort)((double)this.HPMAX * 0.0001 * delta_t);
                         damage = (this.HP > damage) ? damage : this.HP;
-                        this.HP -= damage;
+						if(damage < 1)
+							this.HP -= 1;
+						else
+							this.HP -= damage;
                         this._status.Updates |= 1;
                         CommonFunctions.SendOxygenTakeDamage(this, damage);
                     }

@@ -676,6 +676,16 @@ namespace Saga.Spells
                 character._status.CannotAttack -= 1;
         }
 
+		// Addittion 605
+        public static void ADDITION_SLEEP(ref AdditionValue aval, int value)
+        {
+            Actor character = aval.sender as Actor;
+            if (aval.context == AdditionContext.Applied && value == 0)
+                character._status.Sleep += 1;
+            else if (aval.context == AdditionContext.Deapplied)
+                character._status.Sleep -= 1;
+        }
+
         // Addition 611
         public static void ADDITION_CANSEERESSHOLD(ref AdditionValue aval, int value)
         {
@@ -755,7 +765,25 @@ namespace Saga.Spells
                     character._JexpModifier -= valueb;
             }
         }
-
+		// Addition 619
+		public static void ADDITION_BLEEDING(ref AdditionValue aval, int value)
+		{
+            Actor character = aval.target as Actor;
+            if ((aval.context == AdditionContext.Applied || aval.context == AdditionContext.Reapplied) && character != null)
+            {
+                character._status.CurrentHp += (ushort)value;
+                character._status.Updates |= 1;
+                if (character._status.CurrentHp > (ushort)character._status.MaxHP)
+                {
+                    character._status.CurrentHp = (ushort)character._status.MaxHP;
+                }
+            }
+		}
+		// Addition 653
+		public static void ADDITION_CHANCEPOISON(ref AdditionValue aval, int value)
+		{
+			//TODO
+		}
         // Addition 663
         public static void ADDITION_CANATTACKTRESSHOLD(ref AdditionValue aval, int value)
         {

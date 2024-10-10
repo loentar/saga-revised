@@ -204,8 +204,11 @@ namespace Saga.PrimaryTypes
         public override void OnSkillUsedByTarget(MapObject source, SkillBaseEventArgs e)
         {
             bool isdamage = e.Result == Saga.SkillBaseEventArgs.ResultType.Block || e.Result == Saga.SkillBaseEventArgs.ResultType.Critical || e.Result == Saga.SkillBaseEventArgs.ResultType.Normal;
-            if (e.Damage > 0)
-            {
+            if(e.Damage < 1) {
+				this.HP -= 1;
+			}
+			else if (e.Damage > 0)
+			{
                 bool HasDied = (isdamage && e.Damage >= this.HP && this.stance != 7);
                 if (HasDied)
                 {
@@ -225,7 +228,6 @@ namespace Saga.PrimaryTypes
                     this.HP -= (ushort)e.Damage;
                 }
             }
-
             base.OnSkillUsedByTarget(source, e);
         }
 
